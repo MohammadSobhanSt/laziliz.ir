@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %} Detail {% endblock %}
+
+{% block content %}
+
+    {% if blog_detail.author == request.user %}
+        <div class="d-flex justify-content-between mb-3">
+            <div>
+                <a href="{% url 'blogs:blogs-update' blog_detail.slug %}" class="btn btn-warning">Edit the blog</a>
+            </div>
+            <form action="{% url 'blogs:blogs-delete' blog_detail.slug %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-danger">Delete Blog</button>
+            </form>
+        </div>
+    {% endif %}
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <strong><a href="{% url 'accounts:profile-explore' blog_detail.author.username %}">{{ blog_detail.author.username }}</a> - {{ blog_detail.updated_at | date:"Y-M d " }}</strong>
+                {% if can_like %}
+                    <div class="text-end">
+                        <form action="{% url 'blogs:blogs-like' blog_detail.slug %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-danger">Like</button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="text-end">
+                        <form action="{% url 'blogs:blogs-unlike' blog_detail.slug %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-danger">Unlike</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+            <hr>
+            <div>
+                <p class="text-start"><strong>Likes:</strong> {{ blog_detail.likes_count }}</p>
+                <p class="text-center"><strong>Title: </strong><br><span class="text-info">{{ blog_detail.title }}</span></p>
+                <p class="text-center"><strong>Content: </strong><br><span class="text-danger">{{ blog_detail.content }}</span></p>
+            </div>
+        </div>
+    </div>
+
+    <br>        
+
+        
+    <div class="card">
+        <div class="card-body">
+            <form action="" method="post" class="text-center">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <br>
+                <button class="btn btn-dark" type="submit">Submit</button>
+            </form>
+        </div>
+        <hr>
+        <div class="card-body bg-dark">
+            <div class="text-center text-light p-3">
+                <h5 class="text-light mb-3">Comments:</h5>
+                {% for comment in comments %}
+                    <p><strong class="text-light">{{ comment.user.username }}: </strong>{{ comment.body }}</p><br><hr>
+                {% empty %}
+                    <p class="text-light">This post has no comments yet...</p>
+                    <br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+        
+{% endblock %}

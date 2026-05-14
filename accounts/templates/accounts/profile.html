@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %} Profile {% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between">
+    
+    <div class="text-end">
+        <div class="dropdown">
+          <button class="btn btn-dark rounded dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Settings
+          </button>
+          <ul class="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item text-primary" href="{% url 'blogs:my-blogs' %}">My Blogs</a></li>
+            <li><a class="dropdown-item text-primary" href="{% url 'blogs:blogs-create' %}">New blog</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-warning" href="{% url 'accounts:profile-edit' %}">Edit profile</a></li>
+          </ul>
+        </div>        
+    </div>
+    
+    <div class="text-end">
+        <a class="btn btn-danger rounded me-3" href="#" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">Delete account</a>
+    </div>
+    
+</div>
+<br>
+
+<div class="card bg-dark text-light">
+    <div class="card-body">
+        <div class="text-center">
+            <strong class="text-light">Username:</strong> {{ username }}<br>
+            <strong class="text-light">Email:</strong> {{ email }}<br>
+            {% if request.user.bio %}
+                <strong class="text-light">Bio:</strong> {{ bio }}<br>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Account Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Please type your username <strong>{{ username }}</strong> to confirm that you want to delete your account.</p>
+                <input type="text" id="confirmUsernameInput" class="form-control" placeholder="Enter your username">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteButton" class="btn btn-danger">Delete Account</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('confirmDeleteButton').addEventListener('click', function() {
+        var enteredUsername = document.getElementById('confirmUsernameInput').value;
+        var loggedInUsername = "{{ username }}";
+        if (enteredUsername === loggedInUsername) {
+            var deleteUrl = "{% url 'accounts:delete' 0 %}".replace('0', '{{ request.user.pk }}');
+            window.location.href = deleteUrl;
+        } else {
+            alert("Usernames do not match. Please try again.");
+            document.getElementById('confirmUsernameInput').value = '';
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %} SignUp {% endblock %}
+
+{% block content %}
+
+<style>
+    
+    .center {
+        text-align: center;
+    }
+
+</style>
+
+
+<div class="center">
+<div class="card bg-dark text-light">
+    <div class="card-body">
+        <form action="" method='post'>
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="mb-3 text-light">
+                    <label class="form-label text-light">{{ field.label }}</label>
+                    <div class="text-light">
+                        {{ field }}
+                    </div>
+                    {% if field.help_text %}
+                        <p class="form-text">{{ field.help_text }}</p>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div class="text-light">
+                <div class="mb-3"><br>
+                    <button class="btn btn-dark" type='submit'>SignUp</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<a href="{% url 'accounts:login' %}" class="text-light">Do you already have an account?</a>
+</div>
+
+{% endblock %}

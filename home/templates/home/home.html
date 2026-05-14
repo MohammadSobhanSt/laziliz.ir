@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+    
+    {% for blog in blogs %}
+        <div class="card-content has-text-centered has-background-light">
+            <a href="{% url 'blogs:blogs-detail' blog.slug %}">
+                <p class="has-text-info">{{ blog.title }}</p>
+                <p class="has-text-dark">{{ blog.content | truncatewords:10 }}</p>
+            </a>
+        </div>
+    {% empty %}
+        <p class="has-text-centered has-text-danger">No blogs available yet...</p>
+    {% endfor %}
+
+    {% if is_paginated %}
+        <nav class="pagination is-centered" role="navigation">
+            {% if page_obj.has_previous %}
+                <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% else %}
+                <a class="pagination-previous" disabled>Previous</a>
+            {% endif %}
+    
+            {% if page_obj.has_next %}
+                <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next</a>
+            {% else %}
+                <a class="pagination-next" disabled>Next</a>
+            {% endif %}
+    
+            <ul class="pagination-list">
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li><a class="pagination-link is-current">{{ num }}</a></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li><a class="pagination-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+    {% endif %}
+    
+{% endblock %}

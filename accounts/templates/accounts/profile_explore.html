@@ -1,0 +1,35 @@
+{% extends 'base.html' %} 
+
+{% block title %} {{ user.username }} {% endblock %} 
+
+{% block content %}
+
+
+{% if is_following %}
+    <a href="{% url 'accounts:user-unfollow' user.username %}" class="btn btn-danger ms-1">Unfollow</a>
+{% else %}
+    <a href="{% url 'accounts:user-follow' user.username %}" class="btn btn-info ms-1">Follow</a>
+{% endif %}    
+
+<div class="text-center">
+    <br>
+        <div class="card">
+            <div class="card-body">
+                <strong>Username:</strong> {{ user.username }} <br>
+                {% if user.bio %}
+                    <strong>Bio:</strong> {{ user.bio }} <br>
+                {% else %}
+                     <p class="text-danger"><strong>Bio: </strong> This user has no bio yet...</p>
+                {% endif %}
+                <hr>
+                UserBlogs:<br>
+                {% for blog in blogs %}
+                    <a href="{% url 'blogs:blogs-detail' blog.slug %}">{{ blog.title }}</a><br>
+                {% empty %}
+                    <p class="text-danger">This user has no blogs yet...</p>
+                {% endfor %}
+            </div>
+        </div>
+</div>
+
+{% endblock %}
